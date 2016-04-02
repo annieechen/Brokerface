@@ -1,27 +1,10 @@
-<<<<<<< HEAD
-
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
+         ____            _             _____              
+        | __ ) _ __ ___ | | _____ _ __|  ___|_ _  ___ ___ 
+        |  _ \| '__/ _ \| |/ / _ \ '__| |_ / _` |/ __/ _ \
+        | |_) | | | (_) |   <  __/ |  |  _| (_| | (_|  __/
+        |____/|_|  \___/|_|\_\___|_|  |_|  \__,_|\___\___|
+                                                          
     ----------------------------------------------------------------- 
 
 
-Welcome to your Node.js project on Cloud9 IDE!
-
-This chat example showcases how to use `socket.io` with a static `express` server.
-
-## Running the server
-
-1) Open `server.js` and start the app by clicking on the "Run" button in the top menu.
-
-2) Alternatively you can launch the app from the Terminal:
-
-    $ node server.js
-
-Once the server is running, open the project in the shape of 'https://projectname-username.c9.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
-=======
-# Brokerface
-HackPrinceton 2016: Stock Market Education
->>>>>>> 192a1252d841534ba26f8ef4809e31d3d8093182
+Stock Analysis app, written using Node.JS to pass information to iPhone app in swift

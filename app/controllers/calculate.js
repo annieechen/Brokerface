@@ -32,6 +32,7 @@ var toExport = function(options, callback){
         var splitLines = apiResponse.split("\n");
         var data = splitLines.map((line) => line.split(','));
         data.splice(-1,1);
+        // console.log(data);
         // now data is the csv 2-D array that we want
         // run the things that we need to run on the data
         if(options.algorithm_id == 'k'){
@@ -41,7 +42,8 @@ var toExport = function(options, callback){
         }
         else if(options.algorithm_id == 'kd'){
             var jsonResult = statFunctions.kd(data);
-            callback(jsonResult);
+            var optimal = statFunctions.opt(data);
+            callback(optimal, jsonResult);
         }
     })
 }
@@ -64,7 +66,3 @@ var toExport = function(options, callback){
 //     fs.createReadStream(__dirname+'/tempfile').pipe(parser);
 // }
 module.exports = toExport
-
-toExport('k', function(result){
-    ;
-})
