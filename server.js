@@ -30,11 +30,19 @@ router.use(express.static(path.resolve(__dirname, 'client')));
 
 
 
-router.get("/test", function(req, res, next){
+router.get("/t/:ticker/a/:algorithm_id", function(req, res, next){
     //console.log(req.query.id);
-    var fs = require('fs');
-    var obj = JSON.parse(fs.readFileSync('./client/dearLordWork.json', 'utf8'));
-    res.json(obj)
+    console.log(req.params.ticker);
+    var options = {}
+    options.ticker = req.params.ticker;
+    options.algorithm_id = req.params.algorithm_id;
+    var calculate = require('./app/controllers/calculate.js');
+    // now we run calculate and make the callback function send the response
+    calculate(options, function(calculatedJSON){
+        res.json(calculatedJSON);
+    })
+    // var obj = JSON.parse(fs.readFileSync('./client/dearLordWork.json', 'utf8'));
+    // res.json(obj)
 });
 
 // var financial = require('./app/controllers/financial.js');

@@ -1,8 +1,11 @@
 // we lose one data point apparently, which isn't so bad, right?
+// we can require this, and run it with a callback function that takes the 
+// JSON as an input and processes it the way it wants
 
 var fs = require('fs');
 var parse = require('../../node_modules/csv-parse');
 var financial = require('./financial.js');
+var statFunctions = require('./statFunctions.js');
 
 function dummy(data){
     return "huzzah!";
@@ -24,13 +27,22 @@ function dummy(data){
 // fs.createReadStream(__dirname+'/tempfile').pipe(parser);
 
 // apiResponse is the body...the csv
-var toExport = function(stat, callback){
-    financial(function(apiResponse){
+var toExport = function(options, callback){
+    financial(options.ticker, function(apiResponse){
         var splitLines = apiResponse.split("\n");
         var data = splitLines.map((line) => line.split(','));
         data.splice(-1,1);
-        console.log(data);
-        callback(data);
+        // now data is the csv 2-D array that we want
+        // run the things that we need to run on the data
+        if(options.algorithm_id == 'k'){
+            var jsonResult = statFunctions.k(data);
+            //console.log(jsonResult);
+            callback(jsonResult);
+        }
+        else if(options.algorithm_id == 'kd'){
+            var jsonResult = statFunctions.kd(data);
+            callback(jsonResult);
+        }
     })
 }
 

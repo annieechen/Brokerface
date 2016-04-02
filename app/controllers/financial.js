@@ -1,19 +1,23 @@
+// requiring financial gives you the toExport function which
+// takes in a ticker and a callback function, queries the Yahoo Finance API
+// to get historic data, and allows for callback function to run on that data
+
 // this gives you a full html page with historic data
 // http://finance.yahoo.com/q/hp?s=WU&a=01&b=19&c=2010&d=01&e=19&f=2010&g=d
 
 // this supposedly gives you a csv with historical data
 // http://ichart.finance.yahoo.com/table.csv?s=WU&a=01&b=19&c=2010&d=01&e=19&f=2010&g=d&ignore=.csv
 
-var toExport = function(callback){
+
+var toExport = function(ticker, callback){
     var https = require('https');
     
-    var ticker = 'AAPL';
-    var start_month = '01';
-    var start_day = '10';
-    var start_year = '2010';
-    var end_month = '01';
-    var end_day = '25';
-    var end_year = '2015';
+    var start_month = '04';
+    var start_day = '02';
+    var start_year = '2015';
+    var end_month = '04';
+    var end_day = '02';
+    var end_year = '2016';
     var qPath = '/table.csv?s=' + ticker + '&a=' + start_month + '&b=' + start_day + '&c=' + start_year + '&d=' + end_month + '&e=' + end_day + '&f=' + end_year + '&g=d';
     
     var options = {

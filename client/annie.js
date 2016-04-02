@@ -42,7 +42,7 @@ var parser = parse({delimiter: ','}, function(err, data){
 //         console.log(Kstochastic[k]);
 //      //   console.log(Kstochastic[k]);
 //     }
-    console.log(JSON.stringify(Kstochastic));
+    //console.log(JSON.stringify(Kstochastic));
 });
 
 fs.createReadStream(__dirname+'/tempfile').pipe(parser);

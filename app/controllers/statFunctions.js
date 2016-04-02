@@ -125,13 +125,15 @@ var calcStochastic = function(data)
         Kstochastic[i-1].date = data[i][0];
         Kstochastic[i-1].value = k; 
         Kstochastic[i-1].avevalue = 0;
+        Kstochastic[i-1].price = data[i][4];
     }
     return Kstochastic;
 }
 
 
-var calcStoAverage = function(Kstochastic)
+var calcStoAverage = function(data)
 {
+    var Kstochastic = calcStochastic(data);
     //console.log(Kstochastic);
     var len = Kstochastic.length;
     for (var i = 0; i < len; i++)
@@ -158,15 +160,60 @@ var calcStoAverage = function(Kstochastic)
     return Kstochastic;
 }
 
-module.exports.k = calcStochastic;
-module.exports.d = calcStoAverage;
+// wrapper to calcStoAverage that can take in data instead of stochastic output
+var exportStoAverage = function(data){
+    return calcStoAverage(calcStochastic(data));
+}
+
+module.exports.kd = calcStoAverage;
 
 var Kstochastic = calcStochastic(data);
 Kstochastic = calcStoAverage(Kstochastic);
-for (var i = 0; i < Kstochastic.length; i++)
+
+
+// takes in data files, returns max profit as a float
+// calculates assuming you can own a max of one share at a time
+// must parsefloat every time
+var findMaxProfit = function(data)
 {
-console.log(Kstochastic[i].avevalue);
-}//console.log(JSON.stringify(Kstochastic));
+    var close = 4;
+    var profit = 0;
+    var numDays = data.length;
+    var haveStock = false; // determine whether looking to buy or sell
+    var boughtAt;
+    for (var i = 1; i < numDays -1; i++)
+    {
+        // determine when to buy the first stock
+        if(!haveStock)
+        {
+            if (parseFloat(data[i+1][close]) > parseFloat(data[i][close]))
+            {
+                boughtAt = parseFloat(data[i][close]);
+                haveStock = true;
+            }
+        }
+        // else, you have a stock, when should you buy?
+        else
+        {
+            // looking for where price will drop the next day
+            if(parseFloat(data[i+1][close]) < parseFloat(data[i][close]))
+            {
+                if(boughtAt > parseFloat(data[i][close]))
+                {
+                    console.log("What are you doing you ho");
+                }
+                profit += parseFloat(data[i][close]) -  boughtAt;
+                haveStock = false;
+            }
+        }
+    }
+    // process how much you'd make throughout the rest
+    return profit;
+}
+console.log(findMaxProfit(data));
 
-
+//console.log()
+// if first one goes up, bought the first time, 
+// highest right before sell goes down
+//sell- buy + total profits
  
