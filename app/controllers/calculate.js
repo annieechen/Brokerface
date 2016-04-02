@@ -27,7 +27,8 @@ function dummy(data){
 var toExport = function(stat, callback){
     financial(function(apiResponse){
         var splitLines = apiResponse.split("\n");
-        var data = splitLines.map((line) => line.split(','))
+        var data = splitLines.map((line) => line.split(','));
+        data.splice(-1,1);
         console.log(data);
         callback(data);
     })
