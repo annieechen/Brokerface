@@ -1,12 +1,11 @@
 // functions to convert output of statFunctions to buy/sell data
 
 var statFunctions = require('./statFunctions.js');
-var data = statFunctions.data;
-var kdOutput = statFunctions.kd(data);
 
 // kdStatOutputArray is an array of objects in the form {date, value, avevalue}
 // where value is K, avevalue is D
-var kdCross = function(kdStatOutputArray){
+var kd = function(data){
+    var kdStatOutputArray = statFunctions.kd(data);
     var buySell = [];
     // whether or not you hold shares (NOT NECESSARILY EQUAL TO object.hold CAUSE I DONT KNOW HOW ELSE TO DO IT)
     var ownsShares = false;
@@ -18,7 +17,7 @@ var kdCross = function(kdStatOutputArray){
         // set the hold to be whether K > D
         insertObject.date = kdStatOutputArray[i].date;
         insertObject.price = kdStatOutputArray[i].price;
-        insertObject.hold = (k < d);
+        insertObject.hold = (k > d);
         insertObject.buy = false;
         insertObject.sell = false;
 
@@ -34,7 +33,7 @@ var kdCross = function(kdStatOutputArray){
         if(ownsShares){
             insertObject.profit = pastProfit + insertObject.price - buySell[i-1].price;
             if(insertObject.profit < pastProfit){
-                console.log("ahhh the world is ending");
+               // console.log("ahhh the world is ending");
             }
         }
         else{
@@ -58,5 +57,13 @@ var kdCross = function(kdStatOutputArray){
     return buySell;
 }
 
-var array = kdCross(kdOutput);
-console.log(array[array.length - 1].profit)
+// buy and sell after a daily change of n up/down in a row
+// so sell if it goes up n days in row, buy if it goes down n days in a row
+var dchange = function(data, n){
+    var buySell = [];
+    for(var i = n; i < data.length - 1; i++){
+        for(var j = i - n; j < i)
+    }
+}
+
+module.exports.kd = kd;

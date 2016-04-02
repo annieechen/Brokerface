@@ -112,15 +112,20 @@ var findMaxProfit = function(data)
     // process how much you'd make throughout the rest
     return profit;
 }
+
+// determines how much you would have made if you bought at begin, sold at end
+var findSimpleBuySell = function(data)
+{
+    var numDays = data.length - 1;
+    var result = data[numDays][4] - data[1][4];
+    return result;
+}
 module.exports.kd = calcStoAverage;
 module.exports.opt = findMaxProfit;
-module.exports.data = data;
-var Kstochastic = calcStochastic(data);
-Kstochastic = calcStoAverage(Kstochastic);
 
 
 
-//console.log(findMaxProfit(data));
+
 
 
  

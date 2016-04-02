@@ -36,9 +36,9 @@ router.get("/t/:ticker/a/:algorithm_id", function(req, res, next){
     var options = {}
     options.ticker = req.params.ticker;
     options.algorithm_id = req.params.algorithm_id;
-    var calculate = require('./app/controllers/calculate.js');
+    var heWentToJared = require('./app/controllers/heWentToJared.js');
     // now we run calculate and make the callback function send the response
-    calculate(options, function(calculatedJSON){
+    heWentToJared(options, function(calculatedJSON){
         res.json(calculatedJSON);
     })
     // var obj = JSON.parse(fs.readFileSync('./client/dearLordWork.json', 'utf8'));

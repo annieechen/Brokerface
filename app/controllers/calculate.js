@@ -6,6 +6,7 @@ var fs = require('fs');
 var parse = require('../../node_modules/csv-parse');
 var financial = require('./financial.js');
 var statFunctions = require('./statFunctions.js');
+var buySell = require('./buySell.js');
 
 function dummy(data){
     return "huzzah!";
@@ -32,6 +33,10 @@ var toExport = function(options, callback){
         var splitLines = apiResponse.split("\n");
         var data = splitLines.map((line) => line.split(','));
         data.splice(-1,1);
+        var headers = [data[0]];
+        data = data.splice(2);
+        data.reverse();
+        data = headers.concat(data);
         // console.log(data);
         // now data is the csv 2-D array that we want
         // run the things that we need to run on the data
@@ -41,9 +46,9 @@ var toExport = function(options, callback){
             callback(jsonResult);
         }
         else if(options.algorithm_id == 'kd'){
-            var jsonResult = statFunctions.kd(data);
+            var buySellObject = buySell.kd(data);
             var optimal = statFunctions.opt(data);
-            callback(optimal, jsonResult);
+            callback(optimal, buySellObject);
         }
     })
 }

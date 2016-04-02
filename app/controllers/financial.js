@@ -12,7 +12,7 @@
 var toExport = function(ticker, callback){
     var https = require('https');
     
-    var start_month = '04';
+    var start_month = '03';
     var start_day = '02';
     var start_year = '2015';
     var end_month = '04';
