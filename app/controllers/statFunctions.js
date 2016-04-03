@@ -117,11 +117,73 @@ var findMaxProfit = function(data)
 var findSimpleBuySell = function(data)
 {
     var numDays = data.length - 1;
-    var result = data[numDays][4] - data[1][4];
+    var result = parseFloat(data[numDays][4]) - parseFloat(data[1][4]);
     return result;
 }
+
+// determines how much you would make if you bought and sold at random
+var rando = function(data){
+    var i = 0;
+    var tradingDays = data.length;
+    var wait = Math.floor(Math.random() * 15) + 1;
+    var buySell = [];
+    while(i < tradingDays - 1){
+        var insertObject = {}
+        insertObject.date = parseFloat(data[i+1][0]);
+        insertObject.price = parseFloat(data[i+1][4]);
+        if(wait > 0){
+            if(i == 0){
+                insertObject.hold = false;  
+            }
+            else{
+                insertObject.hold = buySell[i-1].hold;
+            }
+            insertObject.buy = false;
+            insertObject.sell = false;
+            if(insertObject.hold){
+                insertObject.profit = buySell[i-1].profit + insertObject.price - buySell[i-1].price;
+            }
+            else if(i == 0){
+                insertObject.profit = 0;
+            }
+            else{
+                insertObject.profit = buySell[i-1].profit;
+            }
+            buySell.push(insertObject);
+            i++;
+            wait--;
+            continue;
+        }
+        // then we make a transaction
+        // if we were holding before, then we sell now and reset wait to random
+        else if(wait == 0 && buySell[i-1].hold){
+            insertObject.hold = false;
+            insertObject.sell = true;
+            insertObject.buy = false;
+            insertObject.profit = buySell[i-1].profit + insertObject.price - buySell[i-1].price;
+            // reset wait
+            wait = Math.floor(Math.random() * 15) + 15;
+        }
+        // otherwise, we weren't holding, so we buy and reset wait to random
+        else if(wait == 0){
+            insertObject.hold = true;
+            insertObject.sell = false;
+            insertObject.buy = true;
+            wait = Math.floor(Math.random() * 15) + 15;
+            insertObject.profit = buySell[i-1].profit;
+        }
+        buySell.push(insertObject);
+        i++;
+    }
+    var profit = buySell[buySell.length - 1].profit;
+    return profit
+}
+
+
 module.exports.kd = calcStoAverage;
 module.exports.opt = findMaxProfit;
+module.exports.simple = findSimpleBuySell;
+module.exports.rando = rando;
 
 
 

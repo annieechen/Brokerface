@@ -61,9 +61,127 @@ var kd = function(data){
 // so sell if it goes up n days in row, buy if it goes down n days in a row
 var dchange = function(data, n){
     var buySell = [];
-    for(var i = n; i < data.length - 1; i++){
-        for(var j = i - n; j < i)
+    for(var i = 0; i < data.length - 1; i++){
+        var insertObject = {}
+        if(i < n){
+            insertObject.date = parseFloat(data[i+1][0]);
+            insertObject.price = parseFloat(data[i+1][4]);
+            insertObject.profit = 0;
+            insertObject.hold = false;
+            insertObject.buy = false;
+            insertObject.sell = false;
+            buySell.push(insertObject);
+            continue;
+        }
+        
+        // set the default values
+        insertObject.date = parseFloat(data[i+1][0]);
+        insertObject.price = parseFloat(data[i+1][4]);
+        insertObject.profit = buySell[i-1].profit;
+        insertObject.hold = buySell[i-1].hold;
+        insertObject.sell = false;
+        insertObject.buy = false;
+        
+        // if we're currently holding, we need to check whether to sell
+        if(buySell[i-1].hold){
+            // also if we're holding, then we update profits
+            insertObject.profit = buySell[i-1].profit + insertObject.price - buySell[i-1].price;
+            
+            //check the last n days and see whether they're all going up
+            var allUp = true;
+            for(var j = i - n + 1; j <= i; j++){
+                if(parseFloat(data[j+1][7]) <= 0){
+                    allUp = false;
+                    break;
+                }
+            }
+            // if it's gone up the past n days we want to sell
+            if(allUp){
+                insertObject.sell = true;
+                insertObject.hold = false;
+                insertObject.buy = false;
+            }
+        }
+        // otherwise if we're not holding we want to check if we buy
+        else{
+            // now check if the last n days are all going down
+            var allDown = true;
+            for(var j = i - n + 1; j <= i; j++){
+                if(parseFloat(data[j+1][7]) >= 0){
+                    allDown = false;
+                    break;
+                }
+            }
+            // if it's gone down the past n days we want to buy
+            if(allDown){
+                insertObject.sell = false;
+                insertObject.buy = true;
+                insertObject.hold = true;
+            }
+        }
+        
+        buySell.push(insertObject);
     }
+    return buySell;
+}
+
+// algorithm that randomly buys and sells
+var rando = function(data){
+    var i = 0;
+    var tradingDays = data.length;
+    var wait = Math.floor(Math.random() * 15) + 1;
+    var buySell = [];
+    while(i < tradingDays - 1){
+        var insertObject = {}
+        insertObject.date = parseFloat(data[i+1][0]);
+        insertObject.price = parseFloat(data[i+1][4]);
+        if(wait > 0){
+            if(i == 0){
+                insertObject.hold = false;  
+            }
+            else{
+                insertObject.hold = buySell[i-1].hold;
+            }
+            insertObject.buy = false;
+            insertObject.sell = false;
+            if(insertObject.hold){
+                insertObject.profit = buySell[i-1].profit + insertObject.price - buySell[i-1].price;
+            }
+            else if(i == 0){
+                insertObject.profit = 0;
+            }
+            else{
+                insertObject.profit = buySell[i-1].profit;
+            }
+            buySell.push(insertObject);
+            i++;
+            wait--;
+            continue;
+        }
+        // then we make a transaction
+        // if we were holding before, then we sell now and reset wait to random
+        else if(wait == 0 && buySell[i-1].hold){
+            insertObject.hold = false;
+            insertObject.sell = true;
+            insertObject.buy = false;
+            insertObject.profit = buySell[i-1].profit + insertObject.price - buySell[i-1].price;
+            // reset wait
+            wait = Math.floor(Math.random() * 15) + 15;
+        }
+        // otherwise, we weren't holding, so we buy and reset wait to random
+        else if(wait == 0){
+            insertObject.hold = true;
+            insertObject.sell = false;
+            insertObject.buy = true;
+            wait = Math.floor(Math.random() * 15) + 15;
+            insertObject.profit = buySell[i-1].profit;
+        }
+        buySell.push(insertObject);
+        i++;
+    }
+    return buySell;
 }
 
 module.exports.kd = kd;
+module.exports.dchange = dchange;
+module.exports.rando = rando;

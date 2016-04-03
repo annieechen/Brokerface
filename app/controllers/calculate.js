@@ -7,6 +7,7 @@ var parse = require('../../node_modules/csv-parse');
 var financial = require('./financial.js');
 var statFunctions = require('./statFunctions.js');
 var buySell = require('./buySell.js');
+var addtoData = require('./addtoData.js');
 
 function dummy(data){
     return "huzzah!";
@@ -37,18 +38,38 @@ var toExport = function(options, callback){
         data = data.splice(2);
         data.reverse();
         data = headers.concat(data);
-        // console.log(data);
+        var addChange = addtoData.dailychange;
+        data = addChange(data);
+        //console.log(data);
         // now data is the csv 2-D array that we want
         // run the things that we need to run on the data
-        if(options.algorithm_id == 'k'){
-            var jsonResult = statFunctions.k(data);
+        var optimal = statFunctions.opt(data);
+        var simple = statFunctions.simple(data);
+        var randOut = statFunctions.rando(data);
+        var wentToJaredOptions = {'optimal': optimal,
+                                  'simple': simple,
+                                  'randOut': randOut};
+        if(options.algorithm_id.startsWith('dchange')){
+            var n = options.algorithm_id.substring(7);
+            n = parseInt(n);
+            if(Number.isNaN(n)){
+                console.log("ya'll motherfuckers didn't calculate.js an integer to parse!");
+                n = 3;
+            }
+            var buySellObject = buySell.dchange(data, n);
+            wentToJaredOptions.descript = 'This algorithm uses recent daily averages to predict peaks and troughs in the stock\'s price. After ' + n + ' straight days of downward movement, buy in to aim for a lower entry cost, and similarly, sell after ' + n + ' straight days of gains.'
             //console.log(jsonResult);
-            callback(jsonResult);
+            callback(wentToJaredOptions, buySellObject);
         }
         else if(options.algorithm_id == 'kd'){
             var buySellObject = buySell.kd(data);
-            var optimal = statFunctions.opt(data);
-            callback(optimal, buySellObject);
+            wentToJaredOptions.descript = 'This algorithm looks at slow stochastics (K) and fast stochastics (D) to approximate the movement and momentum, respectively, of the stock. When K is above D, the recent movements are pulling the general trend upward, meaning the stock is going up, and vice versa.'
+            callback(wentToJaredOptions, buySellObject);
+        }
+        else if(options.algorithm_id == 'rando'){
+            var buySellObject = buySell.rando(data);
+            wentToJaredOptions.descript = 'This algorithm determines when to buy and sell completely randomly and thus should have no advantage over the market.'
+            callback(wentToJaredOptions, buySellObject);
         }
     })
 }

@@ -1,14 +1,27 @@
 var calculate = require('./calculate.js');
-var buySell = require('./buySell.js');
 
 var toExport = function(options, callback){
-    calculate(options, function(optimal, buySellObject){
+    calculate(options, function(wentToJaredOptions, buySellObject){
+        // initialize the object that will be returned with the response
         var returnObject = {};
-        // WE NEED TO REPLACE KDCROSS WITH A CASE FOR WHAT THE ALGORITHM IS 
+        // add the data series
         returnObject.series = buySellObject;
-        //console.log(buySellObject);
         var notOpt = buySellObject[buySellObject.length - 1].profit;
-        returnObject.efficiency = notOpt / optimal;
+        
+        // now get the current hold, buy, sell
+        var currentState = buySellObject[buySellObject.length - 1];
+        returnObject.currentHold = currentState.hold;
+        returnObject.currentBuy = currentState.buy;
+        returnObject.currentSell = currentState.sell;
+        
+        returnObject.descript = wentToJaredOptions.descript;
+        
+        var optimal = wentToJaredOptions.optimal;
+        var simple = wentToJaredOptions.simple;
+        var randOut = wentToJaredOptions.randOut;
+        returnObject.efficiency = (notOpt - optimal) / Math.abs(optimal);
+        returnObject.simpleEfficiency = (notOpt - simple)/Math.abs(simple);
+        returnObject.randomEfficiency = (notOpt - randOut)/Math.abs(randOut);
         callback(returnObject);
     })
 }
