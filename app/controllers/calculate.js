@@ -48,7 +48,8 @@ var toExport = function(options, callback){
         var randOut = statFunctions.rando(data);
         var wentToJaredOptions = {'optimal': optimal,
                                   'simple': simple,
-                                  'randOut': randOut};
+                                  'randOut': randOut,
+                                  'ticker': options.ticker};
         if(options.algorithm_id.startsWith('dchange')){
             var n = options.algorithm_id.substring(7);
             n = parseInt(n);

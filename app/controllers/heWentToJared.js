@@ -22,6 +22,7 @@ var toExport = function(options, callback){
         returnObject.efficiency = (notOpt - optimal) / Math.abs(optimal);
         returnObject.simpleEfficiency = (notOpt - simple)/Math.abs(simple);
         returnObject.randomEfficiency = (notOpt - randOut)/Math.abs(randOut);
+        returnObject.ticker = wentToJaredOptions.ticker;
         callback(returnObject);
     })
 }
