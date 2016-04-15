@@ -7,4 +7,8 @@
     ----------------------------------------------------------------- 
 
 
-Stock Analysis app, written using Node.JS to pass information to iPhone app in swift
+Stock Analysis app, written using Node.JS to pass information to iPhone app in swift for HackPrinceton 2016.
+
+Link to project: devpost.com/software/brokerface
+
+To Do: migrate to AWS
